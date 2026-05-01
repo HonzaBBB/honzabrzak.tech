@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>honzabrzak.tech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #39ff6a;
+    --green-dim: #1a7a35;
+    --green-faint: #0a2e15;
+    --amber: #ffb700;
+    --bg: #060a07;
+    --card-bg: #080e09;
+    --border: #1a3d20;
+    --border-bright: #2a6b34;
+    --text: #c8e8cc;
+    --text-dim: #6a9e72;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0,0,0,0.08) 3px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.5) 100%);
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  header {
+    padding: 4rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .prompt-line {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .prompt-line span { color: var(--green); }
+
+  h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(16px, 4vw, 28px);
+    color: var(--green);
+    line-height: 1.8;
+    text-shadow:
+      0 0 20px rgba(57,255,106,0.4),
+      0 0 40px rgba(57,255,106,0.15);
+    letter-spacing: -0.02em;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 18px;
+    height: 24px;
+    background: var(--green);
+    vertical-align: middle;
+    margin-left: 4px;
+    animation: blink 1s step-end infinite;
+    position: relative;
+    top: -2px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .tagline {
+    margin-top: 1.5rem;
+    color: var(--text-dim);
+    font-size: 13px;
+    max-width: 560px;
+    line-height: 1.9;
+  }
+
+  .status-bar {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+    font-size: 11px;
+    color: var(--text-dim);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-right: 6px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 4px rgba(57,255,106,0.8); }
+    50% { opacity: 0.5; box-shadow: none; }
+  }
+
+  section { padding: 3rem 0; }
+
+  .section-header {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--green-dim);
+    letter-spacing: 0.2em;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    position: relative;
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .card::before {
+    content: attr(data-index);
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: var(--border-bright);
+  }
+
+  .card:hover {
+    border-color: var(--green-dim);
+    transform: translateY(-2px);
+    background: var(--green-faint);
+  }
+
+  .card:hover .card-title { color: var(--green); }
+
+  .card-label {
+    margin-bottom: 0.75rem;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border: 1px solid var(--border-bright);
+    color: var(--green-dim);
+    font-size: 9px;
+    margin-right: 4px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .card-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 0.75rem;
+    transition: color 0.2s;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .card-footer {
+    margin-top: 1.25rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--green-dim);
+  }
+
+  .card-footer::before { content: '> '; }
+
+  .card-placeholder {
+    border-style: dashed;
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  .elsewhere-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .link-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .link-item:hover {
+    border-color: var(--green-dim);
+    background: var(--green-faint);
+  }
+
+  .link-item:hover .link-name { color: var(--green); }
+
+  .link-name {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: var(--text);
+    transition: color 0.2s;
+    line-height: 1.8;
+  }
+
+  .link-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 0.25rem;
+  }
+
+  .link-url {
+    font-size: 10px;
+    color: var(--green-dim);
+    margin-top: 0.5rem;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0 3rem;
+    font-size: 11px;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 0 1rem; }
+    h1 { font-size: 16px; }
+    footer { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <div class="prompt-line">
+      <span>honza@brzak</span>:~<span>/projects</span>$ ls -la
+    </div>
+
+    <h1>HONZA BRZÁK<span class="cursor"></span></h1>
+
+    <p class="tagline">
+      Vibecodím věci, které mě baví nebo se mi hodí.<br>
+      Tenhle rozcestník existuje, protože jinak to nikdo nenajde.
+    </p>
+
+    <div class="status-bar">
+      <span><span class="dot"></span>online</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="section-header">// projekty</div>
+
+    <div class="grid">
+
+      <a class="card" href="https://canbumblebeefly.fun" target="_blank" data-index="01">
+        <div class="card-label">
+          <span class="tag">web app</span>
+          <span class="tag">JS</span>
+        </div>
+        <div class="card-title">CAN BUMBLEBEE FLY?</div>
+        <div class="card-desc">Kalkulačka aerodynamiky čmeláka. Spoiler: může.</div>
+        <div class="card-footer">canbumblebeefly.fun</div>
+      </a>
+
+      <a class="card" href="https://starfire.monster" target="_blank" data-index="02">
+        <div class="card-label">
+          <span class="tag">game</span>
+          <span class="tag">pixel</span>
+        </div>
+        <div class="card-title">STARFIRE</div>
+        <div class="card-desc">Pixelová střílečka přímo v prohlížeči. Žádný install, žádný launcher.</div>
+        <div class="card-footer">starfire.monster</div>
+      </a>
+
+      <a class="card" href="https://filmpicker.cz" target="_blank" data-index="03">
+        <div class="card-label">
+          <span class="tag">web app</span>
+          <span class="tag">AI</span>
+        </div>
+        <div class="card-title">FILMPICKER</div>
+        <div class="card-desc">Doporučí filmy podle toho, které se ti líbily. Filtruje i podle streamovací platformy.</div>
+        <div class="card-footer">filmpicker.cz</div>
+      </a>
+
+      <div class="card card-placeholder" data-index="??">
+        <div class="card-label">
+          <span class="tag">??</span>
+        </div>
+        <div class="card-title">WORK IN PROGRESS</div>
+        <div class="card-desc">Tady bude něco. Zatím nevím co.</div>
+        <div class="card-footer">coming soon</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section style="padding-top: 0;">
+    <div class="section-header">// elsewhere</div>
+
+    <div class="elsewhere-grid">
+
+      <a class="link-item" href="https://janbrzak.com" target="_blank">
+        <span class="link-name">JAN BRZÁK</span>
+        <span class="link-desc">Eseje a próza.</span>
+        <span class="link-url">janbrzak.com</span>
+      </a>
+
+      <a class="link-item" href="https://honzabrzak.cz" target="_blank">
+        <span class="link-name">HONZABRZAK.CZ</span>
+        <span class="link-desc">PPC freelance.</span>
+        <span class="link-url">honzabrzak.cz</span>
+      </a>
+
+      <a class="link-item" href="mailto:janbrzak.prg@gmail.com">
+        <span class="link-name">EMAIL</span>
+        <span class="link-desc">Pokud chceš napsat.</span>
+        <span class="link-url">janbrzak.prg@gmail.com</span>
+      </a>
+
+    </div>
+  </section>
+
+  <footer>
+    <span>vibecodováno s Claude Sonnetem</span>
+    <span style="font-family:'Press Start 2P',monospace; font-size: 7px; color: var(--border-bright);">EOF</span>
+  </footer>
+
+</div>
+
+</body>
+</html>
