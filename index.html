@@ -387,46 +387,18 @@
       line-height: 1.8;
     }
 
-    .form { display: flex; flex-direction: column; gap: .6rem; }
-
-    .form input[type="email"] {
-      width: 100%;
-      padding: .8rem 1rem;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      font-family: 'IBM Plex Sans', sans-serif;
-      font-size: .875rem;
-      font-weight: 300;
+    .contact-email a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(0.9rem, 1.5vw, 1.05rem);
       color: var(--text);
-      outline: none;
-      border-radius: 0;
-      transition: border-color .2s;
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.15rem;
+      transition: color .2s, border-color .2s;
     }
-    .form input[type="email"]:focus { border-color: var(--text); }
-    .form input[type="email"]::placeholder { color: var(--muted); }
-
-    .form button {
-      padding: .8rem 1.5rem;
-      background: var(--text);
-      color: var(--bg);
-      border: 1px solid var(--text);
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: .68rem;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background .2s, border-color .2s;
-      border-radius: 0;
-      align-self: flex-start;
-    }
-    .form button:hover { background: var(--accent); border-color: var(--accent); }
-
-    .gdpr {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: .6rem;
-      color: var(--muted);
-      line-height: 1.65;
-      letter-spacing: .02em;
+    .contact-email a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
     }
 
     /* FOOTER */
@@ -441,7 +413,14 @@
       gap: 1rem;
     }
 
-    .footer-note {
+    .footer-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .footer-note,
+    .footer-cookies {
       font-family: 'IBM Plex Mono', monospace;
       font-size: .65rem;
       color: var(--muted);
@@ -654,50 +633,36 @@
   <!-- CONTACT -->
   <section id="contact">
     <div class="container">
-      <span class="label"><span class="i18n-en">Stay in the loop</span><span class="i18n-cs">Buďte v obraze</span></span>
+      <span class="label"><span class="i18n-en">Contact</span><span class="i18n-cs">Kontakt</span></span>
       <div class="contact-grid">
         <div class="contact-text">
-          <h2><span class="i18n-en">I write occasionally<br>about what I'm building.</span><span class="i18n-cs">Občas píšu<br>o tom, co stavím.</span></h2>
+          <h2><span class="i18n-en">Have something to build<br>or talk about?</span><span class="i18n-cs">Chceš něco postavit<br>nebo probrat?</span></h2>
           <p>
-            <span class="i18n-en i18n-block">No hype, no funnels. If you're building something and want to follow along, or if you have a problem worth solving, this is the place.</span>
-            <span class="i18n-cs i18n-block">Žádný humbuk, žádné trychtýře. Pokud taky něco stavíš a chceš sledovat dění, nebo máš problém, který stojí za vyřešení, jsi tady správně.</span>
+            <span class="i18n-en i18n-block">Drop me a line — projects, automation, or just saying hi. I usually reply within several days.</span>
+            <span class="i18n-cs i18n-block">Napiš — projekt, automatizace, nebo jen pozdrav. Obvykle odpovím během několika dnů.</span>
           </p>
         </div>
-        <div class="form">
-          <input type="email" id="contact-email" placeholder="your@email.com" aria-label="Email address" data-placeholder-cs="vas@email.cz" data-aria-cs="E-mailová adresa">
-          <button type="button"><span class="i18n-en">Subscribe</span><span class="i18n-cs">Odebírat</span></button>
-          <p class="gdpr">
-            <span class="i18n-en i18n-block">Your email is only used to send these updates.<br>No third-party sharing. Unsubscribe anytime.</span>
-            <span class="i18n-cs i18n-block">Tvůj e-mail používám jen na tyhle aktualizace.<br>Bez předávání třetím stranám. Odhlášení kdykoli.</span>
-          </p>
+        <div class="contact-email">
+          <a href="mailto:janbrzak.prg@gmail.com">janbrzak.prg@gmail.com</a>
         </div>
       </div>
     </div>
   </section>
 
   <footer>
-    <p class="footer-note">© 2026 Honza Brzák</p>
+    <div class="footer-meta">
+      <p class="footer-note">© 2026 Honza Brzák</p>
+      <p class="footer-cookies">
+        <span class="i18n-en">This site does not use cookies.</span>
+        <span class="i18n-cs">Tento web nepoužívá žádné cookies.</span>
+      </p>
+    </div>
     <ul class="footer-links">
       <li><a href="https://github.com/HonzaBBB" target="_blank" rel="noopener">GitHub</a></li>
-      <li><a href="https://janbrzak.com" target="_blank" rel="noopener">Blog</a></li>
-      <li><a href="mailto:honza@honzabrzak.tech">Email</a></li>
     </ul>
   </footer>
 
   <script>
-    (function () {
-      var root = document.documentElement;
-      if (root.classList.contains('lang-cs')) {
-        var input = document.getElementById('contact-email');
-        if (input) {
-          var ph = input.getAttribute('data-placeholder-cs');
-          if (ph) input.placeholder = ph;
-          var ar = input.getAttribute('data-aria-cs');
-          if (ar) input.setAttribute('aria-label', ar);
-        }
-      }
-    })();
-
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
