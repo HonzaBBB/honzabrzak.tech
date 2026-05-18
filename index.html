@@ -1,455 +1,718 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en" class="lang-en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>honzabrzak.tech</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --green: #39ff6a;
-    --green-dim: #1a7a35;
-    --green-faint: #0a2e15;
-    --amber: #ffb700;
-    --bg: #060a07;
-    --card-bg: #080e09;
-    --border: #1a3d20;
-    --border-bright: #2a6b34;
-    --text: #c8e8cc;
-    --text-dim: #6a9e72;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">Honza Brzák — App Development</title>
+  <meta id="page-desc" name="description" content="I build apps that start with a real problem. Scalability, transparency, security.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  <script>
+    (function () {
+      var navLang = (typeof navigator !== 'undefined' && (navigator.language || navigator.userLanguage)) || '';
+      var cs = navLang.toLowerCase().indexOf('cs') === 0;
+      var root = document.documentElement;
+      root.className = cs ? 'lang-cs' : 'lang-en';
+      root.setAttribute('lang', cs ? 'cs' : 'en');
+      if (cs) {
+        var t = document.getElementById('page-title');
+        if (t) t.textContent = 'Honza Brzák — Vývoj aplikací';
+        var d = document.getElementById('page-desc');
+        if (d) d.setAttribute('content', 'Stavím aplikace, které vycházejí z reálného problému. Škálovatelnost, transparentnost, bezpečnost.');
+      }
+    })();
+  </script>
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 14px;
-    line-height: 1.6;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+  <style>
+    :root {
+      --bg:       #ffffff;
+      --text:     #0A0A0A;
+      --muted:    #6B6B6B;
+      --accent:   #C8501E;
+      --border:   #E5E5E5;
+      --subtle:   #F5F5F5;
+    }
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 3px,
-      rgba(0,0,0,0.08) 3px,
-      rgba(0,0,0,0.08) 4px
-    );
-    pointer-events: none;
-    z-index: 100;
-  }
+    html.lang-en .i18n-cs,
+    html.lang-cs .i18n-en {
+      display: none !important;
+    }
 
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.5) 100%);
-    pointer-events: none;
-    z-index: 99;
-  }
+    .i18n-block {
+      display: block;
+    }
 
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
-  header {
-    padding: 4rem 0 2rem;
-    border-bottom: 1px solid var(--border);
-  }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
 
-  .prompt-line {
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.05em;
-  }
+    /* NAV */
+    nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
 
-  .prompt-line span { color: var(--green); }
+    .nav-logo {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
 
-  h1 {
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(16px, 4vw, 28px);
-    color: var(--green);
-    line-height: 1.8;
-    text-shadow:
-      0 0 20px rgba(57,255,106,0.4),
-      0 0 40px rgba(57,255,106,0.15);
-    letter-spacing: -0.02em;
-  }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      list-style: none;
+    }
 
-  .cursor {
-    display: inline-block;
-    width: 18px;
-    height: 24px;
-    background: var(--green);
-    vertical-align: middle;
-    margin-left: 4px;
-    animation: blink 1s step-end infinite;
-    position: relative;
-    top: -2px;
-  }
+    .nav-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { color: var(--accent) !important; }
 
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
+    /* LAYOUT */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2.5rem;
+    }
 
-  .tagline {
-    margin-top: 1.5rem;
-    color: var(--text-dim);
-    font-size: 13px;
-    max-width: 560px;
-    line-height: 1.9;
-  }
+    /* LABEL */
+    .label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 1.5rem;
+    }
 
-  .status-bar {
-    display: flex;
-    gap: 2rem;
-    margin-top: 2rem;
-    font-size: 11px;
-    color: var(--text-dim);
-    flex-wrap: wrap;
-    align-items: center;
-  }
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 4rem;
+    }
 
-  .dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    margin-right: 6px;
-    animation: pulse 2s ease-in-out infinite;
-  }
+    .hero-kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: up .5s ease forwards .1s;
+    }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 4px rgba(57,255,106,0.8); }
-    50% { opacity: 0.5; box-shadow: none; }
-  }
+    h1 {
+      font-size: clamp(3.5rem, 9vw, 7rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: up .6s ease forwards .2s;
+    }
 
-  section { padding: 3rem 0; }
+    .hero-pillars {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: up .6s ease forwards .35s;
+    }
 
-  .section-header {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 9px;
-    color: var(--green-dim);
-    letter-spacing: 0.2em;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
+    .hero-pillars span {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
 
-  .section-header::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+    .hero-pillars .sep {
+      color: var(--border);
+      font-size: 0.75rem;
+    }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1rem;
-  }
+    .hero-sub {
+      max-width: 480px;
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 3.5rem;
+      opacity: 0;
+      animation: up .6s ease forwards .5s;
+    }
 
-  .card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    padding: 1.5rem;
-    position: relative;
-    transition: border-color 0.2s, transform 0.2s, background 0.2s;
-    text-decoration: none;
-    color: inherit;
-    display: block;
-  }
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      opacity: 0;
+      animation: up .6s ease forwards .65s;
+    }
 
-  .card::before {
-    content: attr(data-index);
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 7px;
-    color: var(--border-bright);
-  }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .4rem .9rem;
+      border: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: .03em;
+      color: var(--text);
+      text-decoration: none;
+      transition: border-color .2s, color .2s;
+    }
+    .pill:hover { border-color: var(--text); }
 
-  .card:hover {
-    border-color: var(--green-dim);
-    transform: translateY(-2px);
-    background: var(--green-faint);
-  }
+    .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #4CAF79;
+      flex-shrink: 0;
+    }
+    .dot.beta  { background: #E8A92A; }
+    .dot.fun   { background: var(--muted); }
 
-  .card:hover .card-title { color: var(--green); }
+    /* DIVIDER */
+    hr.divider {
+      max-width: 960px;
+      margin: 0 auto;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
 
-  .card-label {
-    margin-bottom: 0.75rem;
-  }
+    /* SECTIONS */
+    .section {
+      padding: 6rem 0;
+    }
 
-  .tag {
-    display: inline-block;
-    padding: 2px 6px;
-    border: 1px solid var(--border-bright);
-    color: var(--green-dim);
-    font-size: 9px;
-    margin-right: 4px;
-    font-family: 'Share Tech Mono', monospace;
-  }
+    /* APPROACH */
+    #approach h2 {
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 3.5rem;
+    }
 
-  .card-title {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 10px;
-    color: var(--text);
-    line-height: 1.8;
-    margin-bottom: 0.75rem;
-    transition: color 0.2s;
-  }
+    .pillars {
+      display: flex;
+      flex-direction: column;
+    }
 
-  .card-desc {
-    font-size: 12px;
-    color: var(--text-dim);
-    line-height: 1.7;
-  }
+    .pillar {
+      display: grid;
+      grid-template-columns: 3rem 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .pillar:last-child { border-bottom: 1px solid var(--border); }
+    .pillar.visible { opacity: 1; transform: none; }
 
-  .card-footer {
-    margin-top: 1.25rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--border);
-    font-size: 11px;
-    color: var(--green-dim);
-  }
+    .pillar-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: .1em;
+      padding-top: .2rem;
+    }
 
-  .card-footer::before { content: '> '; }
+    .pillar-body h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: .5rem;
+    }
 
-  .card-placeholder {
-    border-style: dashed;
-    opacity: 0.45;
-    pointer-events: none;
-  }
+    .pillar-body p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 520px;
+    }
 
-  .elsewhere-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-  }
+    /* PROJECTS */
+    #projects h2 {
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 3.5rem;
+    }
 
-  .link-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 1rem 1.25rem;
-    border: 1px solid var(--border);
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.2s, background 0.2s;
-  }
+    .projects {
+      display: flex;
+      flex-direction: column;
+    }
 
-  .link-item:hover {
-    border-color: var(--green-dim);
-    background: var(--green-faint);
-  }
+    .project {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: start;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .project:last-child { border-bottom: 1px solid var(--border); }
+    .project.visible { opacity: 1; transform: none; }
+    .project:hover .project-name { color: var(--accent); }
 
-  .link-item:hover .link-name { color: var(--green); }
+    .project-left { display: flex; flex-direction: column; gap: .6rem; }
 
-  .link-name {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 8px;
-    color: var(--text);
-    transition: color 0.2s;
-    line-height: 1.8;
-  }
+    .project-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      transition: color .2s;
+    }
 
-  .link-desc {
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 0.25rem;
-  }
+    .project-desc {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 480px;
+    }
 
-  .link-url {
-    font-size: 10px;
-    color: var(--green-dim);
-    margin-top: 0.5rem;
-  }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+      margin-top: .25rem;
+    }
 
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 2rem 0 3rem;
-    font-size: 11px;
-    color: var(--text-dim);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
+    .tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: .04em;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: .15rem .45rem;
+    }
 
-  @media (max-width: 600px) {
-    .container { padding: 0 1rem; }
-    h1 { font-size: 16px; }
-    footer { flex-direction: column; }
-  }
-</style>
+    .project-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: .5rem;
+      padding-top: .2rem;
+    }
+
+    .project-status {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .project-arrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--border);
+      transition: color .2s;
+    }
+    .project:hover .project-arrow { color: var(--accent); }
+
+    /* CONTACT */
+    #contact {
+      padding: 6rem 0;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+      padding-top: 3.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .contact-text h2 {
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .contact-text p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .form { display: flex; flex-direction: column; gap: .6rem; }
+
+    .form input[type="email"] {
+      width: 100%;
+      padding: .8rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .875rem;
+      font-weight: 300;
+      color: var(--text);
+      outline: none;
+      border-radius: 0;
+      transition: border-color .2s;
+    }
+    .form input[type="email"]:focus { border-color: var(--text); }
+    .form input[type="email"]::placeholder { color: var(--muted); }
+
+    .form button {
+      padding: .8rem 1.5rem;
+      background: var(--text);
+      color: var(--bg);
+      border: 1px solid var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .68rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .2s, border-color .2s;
+      border-radius: 0;
+      align-self: flex-start;
+    }
+    .form button:hover { background: var(--accent); border-color: var(--accent); }
+
+    .gdpr {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .6rem;
+      color: var(--muted);
+      line-height: 1.65;
+      letter-spacing: .02em;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.75rem 2.5rem;
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .footer-note {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .65rem;
+      color: var(--muted);
+      letter-spacing: .03em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.75rem;
+      list-style: none;
+    }
+    .footer-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .65rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: .03em;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+
+    /* ANIMATIONS */
+    @keyframes up {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.25rem; }
+      .container { padding: 0 1.25rem; }
+      .nav-links { gap: 1.5rem; }
+      .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .pillar { grid-template-columns: 2.5rem 1fr; gap: 1rem; }
+      .project { grid-template-columns: 1fr; }
+      .project-right { flex-direction: row; align-items: center; }
+      footer { flex-direction: column; text-align: center; padding: 1.5rem 1.25rem; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
+  <nav>
+    <a href="#" class="nav-logo">Honza Brzák</a>
+    <ul class="nav-links">
+      <li><a href="#approach"><span class="i18n-en">Approach</span><span class="i18n-cs">Přístup</span></a></li>
+      <li><a href="#projects"><span class="i18n-en">Projects</span><span class="i18n-cs">Projekty</span></a></li>
+      <li><a href="#contact" class="nav-cta"><span class="i18n-en">Get in touch</span><span class="i18n-cs">Ozvěte se</span></a></li>
+    </ul>
+  </nav>
 
-  <header>
-    <div class="prompt-line">
-      <span>honza@brzak</span>:~<span>/projects</span>$ ls -la
-    </div>
-
-    <h1>HONZA BRZÁK<span class="cursor"></span></h1>
-
-    <p class="tagline">
-      Vibecodím věci, které mě baví nebo se mi hodí.<br>
-      Tenhle rozcestník existuje, protože jinak to nikdo nenajde.
-    </p>
-
-    <div class="status-bar">
-      <span><span class="dot"></span>online</span>
-    </div>
-  </header>
-
-  <section>
-    <div class="section-header">// projekty</div>
-
-    <div class="grid">
-
-      <a class="card" href="https://canbumblebeefly.fun" target="_blank" data-index="01">
-        <div class="card-label">
-          <span class="tag">web app</span>
-          <span class="tag">JS</span>
-        </div>
-        <div class="card-title">CAN BUMBLEBEE FLY?</div>
-        <div class="card-desc">Spočítejte si, jestli čmelák může létat. Spoiler: může.</div>
-        <div class="card-footer">canbumblebeefly.fun</div>
-      </a>
-
-      <a class="card" href="https://starfire.monster" target="_blank" data-index="02">
-        <div class="card-label">
-          <span class="tag">game</span>
-          <span class="tag">pixel</span>
-        </div>
-        <div class="card-title">STARFIRE</div>
-        <div class="card-desc">Pixelová střílečka přímo v prohlížeči. Žádný install, žádný launcher.</div>
-        <div class="card-footer">starfire.monster</div>
-      </a>
-
-      <a class="card" href="https://filmpicker.cz" target="_blank" data-index="03">
-        <div class="card-label">
-          <span class="tag">web app</span>
-          <span class="tag">AI</span>
-        </div>
-        <div class="card-title">FILMPICKER</div>
-        <div class="card-desc">Doporučí filmy podle toho, které se ti líbily. Filtruje i podle streamovací platformy.</div>
-        <div class="card-footer">filmpicker.cz</div>
-      </a>
-
-      <a class="card" href="https://freelogbook.online" target="_blank" data-index="04">
-        <div class="card-label">
-          <span class="tag">web app</span>
-          <span class="tag">aviation</span>
-        </div>
-        <div class="card-title">FREE LOGBOOK</div>
-        <div class="card-desc">Pilotní logbook pro jednoduchý záznam letů online.</div>
-        <div class="card-footer">freelogbook.online</div>
-      </a>
-
-      <a class="card" href="https://chatboost.cz/" target="_blank" data-index="05">
-        <div class="card-label">
-          <span class="tag">web app</span>
-          <span class="tag">AI</span>
-        </div>
-        <div class="card-title">CHATBOOST</div>
-        <div class="card-desc">Open-source AI chatbot widget pro rychlé nasazení na web.</div>
-        <div class="card-footer">chatboost.cz</div>
-      </a>
-
-      <a class="card" href="https://cookieaudit.cz/" target="_blank" data-index="06">
-        <div class="card-label">
-          <span class="tag">web app</span>
-          <span class="tag">GDPR</span>
-        </div>
-        <div class="card-title">COOKIE AUDIT</div>
-        <div class="card-desc">Rychlá kontrola GDPR compliance cookies na webu.</div>
-        <div class="card-footer">cookieaudit.cz</div>
-      </a>
-
-      <a class="card" href="https://github.com/HonzaBBB/GoogleAdsAnomalyDetector" target="_blank" data-index="07">
-        <div class="card-label">
-          <span class="tag">script</span>
-          <span class="tag">Google Ads</span>
-        </div>
-        <div class="card-title">GOOGLE ADS ANOMALY DETECTOR</div>
-        <div class="card-desc">MCC-level Google Ads Script pro monitoring účtů a alerty na anomálie.</div>
-        <div class="card-footer">github.com/HonzaBBB/GoogleAds...</div>
-      </a>
-
-      <a class="card" href="https://github.com/HonzaBBB/AI_KW_Analysis" target="_blank" data-index="08">
-        <div class="card-label">
-          <span class="tag">n8n</span>
-          <span class="tag">AI</span>
-        </div>
-        <div class="card-title">AI KW ANALYSIS</div>
-        <div class="card-desc">n8n workflow template pro AI analýzu a kategorizaci klíčových slov.</div>
-        <div class="card-footer">github.com/HonzaBBB/AI_KW...</div>
-      </a>
-
-      <div class="card card-placeholder" data-index="??">
-        <div class="card-label">
-          <span class="tag">??</span>
-        </div>
-        <div class="card-title">WORK IN PROGRESS</div>
-        <div class="card-desc">Tady bude něco. Zatím nevím co.</div>
-        <div class="card-footer">coming soon</div>
+  <!-- HERO -->
+  <section id="hero">
+    <div class="container">
+      <p class="hero-kicker">honzabrzak.tech</p>
+      <h1><span class="i18n-en">App development</span><span class="i18n-cs">Vývoj aplikací</span></h1>
+      <div class="hero-pillars">
+        <span class="i18n-en">Scalability</span><span class="i18n-cs">Škálovatelnost</span>
+        <span class="sep">/</span>
+        <span class="i18n-en">Transparency</span><span class="i18n-cs">Transparentnost</span>
+        <span class="sep">/</span>
+        <span class="i18n-en">Security</span><span class="i18n-cs">Bezpečnost</span>
       </div>
-
+      <p class="hero-sub">
+        <span class="i18n-en i18n-block">I build apps that start with a real problem. When I got tired of logging flight hours by hand, I built Freelogbook. When I couldn't agree with my kids on what to watch, I built Filmpicker. That's the process.</span>
+        <span class="i18n-cs i18n-block">Stavím aplikace, které vycházejí z reálného problému. Když mě přestalo bavit zapisovat letové hodiny ručně, postavil jsem Freelogbook. Když jsme se s dětmi nemohli shodnout, co pustit, postavil jsem Filmpicker. Tak vypadá můj proces.</span>
+      </p>
+      <div class="pills">
+        <a href="https://filmpicker.cz" target="_blank" rel="noopener" class="pill">
+          <span class="dot"></span> filmpicker.cz
+        </a>
+        <a href="https://freelogbook.online" target="_blank" rel="noopener" class="pill">
+          <span class="dot beta"></span> freelogbook — beta
+        </a>
+        <a href="https://starfire.monster" target="_blank" rel="noopener" class="pill">
+          <span class="dot fun"></span> starfire.monster
+        </a>
+      </div>
     </div>
   </section>
 
-  <section style="padding-top: 0;">
-    <div class="section-header">// elsewhere</div>
+  <hr class="divider">
 
-    <div class="elsewhere-grid">
+  <!-- APPROACH -->
+  <section id="approach" class="section">
+    <div class="container">
+      <span class="label"><span class="i18n-en">Approach</span><span class="i18n-cs">Přístup</span></span>
+      <h2><span class="i18n-en">How I actually work</span><span class="i18n-cs">Jak to doopravdy dělám</span></h2>
+      <div class="pillars">
 
-      <a class="link-item" href="https://janbrzak.com" target="_blank">
-        <span class="link-name">JAN BRZÁK</span>
-        <span class="link-desc">Eseje a próza.</span>
-        <span class="link-url">janbrzak.com</span>
-      </a>
+        <div class="pillar">
+          <p class="pillar-num">01</p>
+          <div class="pillar-body">
+            <h3><span class="i18n-en">Problem first</span><span class="i18n-cs">Nejdřív problém</span></h3>
+            <p>
+              <span class="i18n-en i18n-block">I start with what's missing or broken. That's the first impulse for building an app.</span>
+              <span class="i18n-cs i18n-block">Začínám tím, co chybí nebo nefunguje. To je první impuls pro tvorbu aplikace.</span>
+            </p>
+          </div>
+        </div>
 
-      <a class="link-item" href="https://honzabrzak.cz" target="_blank">
-        <span class="link-name">HONZABRZAK.CZ</span>
-        <span class="link-desc">PPC freelance.</span>
-        <span class="link-url">honzabrzak.cz</span>
-      </a>
+        <div class="pillar">
+          <p class="pillar-num">02</p>
+          <div class="pillar-body">
+            <h3><span class="i18n-en">Draft in an afternoon. Production-ready in days.</span><span class="i18n-cs">Náčrt za odpoledne. Do produkce během pár dní.</span></h3>
+            <p>
+              <span class="i18n-en i18n-block">Getting to a working prototype takes one afternoon. Getting it right — auth, error handling, edge cases — takes a bit longer. Both steps happen.</span>
+              <span class="i18n-cs i18n-block">K funkčnímu prototypu se dostanu za jedno odpoledne. Než je to správně — přihlášení, ošetření chyb, okrajové případy — chvilku to trvá. Obě fáze ale proběhnou.</span>
+            </p>
+          </div>
+        </div>
 
-      <a class="link-item" href="mailto:janbrzak.prg@gmail.com">
-        <span class="link-name">EMAIL</span>
-        <span class="link-desc">Pokud chceš napsat.</span>
-        <span class="link-url">janbrzak.prg@gmail.com</span>
-      </a>
+        <div class="pillar">
+          <p class="pillar-num">03</p>
+          <div class="pillar-body">
+            <h3><span class="i18n-en">Security and compliance built in</span><span class="i18n-cs">Bezpečnost a compliance už od začátku</span></h3>
+            <p>
+              <span class="i18n-en i18n-block">Every project goes through a security checklist before launch. GDPR, cookie consent, RLS policies. Part of the process from day one.</span>
+              <span class="i18n-cs i18n-block">Každý projekt před spuštěním projde bezpečnostním checklistem. GDPR, souhlas s cookies, RLS politiky. Součást procesu od prvního dne.</span>
+            </p>
+          </div>
+        </div>
 
+        <div class="pillar">
+          <p class="pillar-num">04</p>
+          <div class="pillar-body">
+            <h3><span class="i18n-en">Open by default</span><span class="i18n-cs">Otevřeně jako výchozí stav</span></h3>
+            <p>
+              <span class="i18n-en i18n-block">The code is on GitHub. Read it, fork it, or tell me what's wrong with it.</span>
+              <span class="i18n-cs i18n-block">Kód je na GitHubu. Můžeš si ho přečíst, forknout, nebo mi říct, co je špatně.</span>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- PROJECTS -->
+  <section id="projects" class="section">
+    <div class="container">
+      <span class="label"><span class="i18n-en">Projects</span><span class="i18n-cs">Projekty</span></span>
+      <h2><span class="i18n-en">What I'm currently<br>building and refining.</span><span class="i18n-cs">Na čem teď stavím<br>a doladuju.</span></h2>
+      <div class="projects">
+
+        <a href="https://filmpicker.cz" target="_blank" rel="noopener" class="project">
+          <div class="project-left">
+            <span class="project-name">Filmpicker</span>
+            <p class="project-desc">
+              <span class="i18n-en i18n-block">A film recommender connected to Czech streaming platforms. Tell it your mood, get a suggestion and where to watch it.</span>
+              <span class="i18n-cs i18n-block">Doporučuje filmy. Napojený na české streamovací služby. Řekni náladu, dostaneš tip a kde to pustit.</span>
+            </p>
+            <div class="project-tags">
+              <span class="tag">Next.js</span>
+              <span class="tag">Supabase</span>
+              <span class="tag">Claude API</span>
+              <span class="tag">TMDB</span>
+            </div>
+          </div>
+          <div class="project-right">
+            <span class="project-status"><span class="i18n-en">Live</span><span class="i18n-cs">Živě</span></span>
+            <span class="project-arrow">↗</span>
+          </div>
+        </a>
+
+        <a href="https://freelogbook.online" target="_blank" rel="noopener" class="project">
+          <div class="project-left">
+            <span class="project-name">Freelogbook</span>
+            <p class="project-desc">
+              <span class="i18n-en i18n-block">A flight logbook for pilots. Simplifies tracking flight hours and aircraft types. In testing with three real users, free to use.</span>
+              <span class="i18n-cs i18n-block">Letový deník pro piloty. Zjednodušuje sledování nalétaných hodin a typů letadel. Testuju se třemi reálnými uživateli, zdarma k použití.</span>
+            </p>
+            <div class="project-tags">
+              <span class="tag">Netlify</span>
+              <span class="tag">Supabase</span>
+              <span class="tag">Free</span>
+            </div>
+          </div>
+          <div class="project-right">
+            <span class="project-status">Beta</span>
+            <span class="project-arrow">↗</span>
+          </div>
+        </a>
+
+        <a href="https://starfire.monster" target="_blank" rel="noopener" class="project">
+          <div class="project-left">
+            <span class="project-name">Starfire</span>
+            <p class="project-desc">
+              <span class="i18n-en i18n-block">A top-down pixel shooter in the browser. Built for fun and for honest feedback from the toughest audience I know.</span>
+              <span class="i18n-cs i18n-block">Pixelová střílečka shora dolů v prohlížeči. Stavěná pro zábavu a upřímnou zpětnou vazbu od nejnáročnějšího publika, co znám.</span>
+            </p>
+            <div class="project-tags">
+              <span class="tag">Phaser.js</span>
+              <span class="tag">GitHub Pages</span>
+              <span class="tag">Open source</span>
+            </div>
+          </div>
+          <div class="project-right">
+            <span class="project-status"><span class="i18n-en">In development</span><span class="i18n-cs">Ve vývoji</span></span>
+            <span class="project-arrow">↗</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <span class="label"><span class="i18n-en">Stay in the loop</span><span class="i18n-cs">Buďte v obraze</span></span>
+      <div class="contact-grid">
+        <div class="contact-text">
+          <h2><span class="i18n-en">I write occasionally<br>about what I'm building.</span><span class="i18n-cs">Občas píšu<br>o tom, co stavím.</span></h2>
+          <p>
+            <span class="i18n-en i18n-block">No hype, no funnels. If you're building something and want to follow along, or if you have a problem worth solving, this is the place.</span>
+            <span class="i18n-cs i18n-block">Žádný humbuk, žádné trychtýře. Pokud taky něco stavíš a chceš sledovat dění, nebo máš problém, který stojí za vyřešení, jsi tady správně.</span>
+          </p>
+        </div>
+        <div class="form">
+          <input type="email" id="contact-email" placeholder="your@email.com" aria-label="Email address" data-placeholder-cs="vas@email.cz" data-aria-cs="E-mailová adresa">
+          <button type="button"><span class="i18n-en">Subscribe</span><span class="i18n-cs">Odebírat</span></button>
+          <p class="gdpr">
+            <span class="i18n-en i18n-block">Your email is only used to send these updates.<br>No third-party sharing. Unsubscribe anytime.</span>
+            <span class="i18n-cs i18n-block">Tvůj e-mail používám jen na tyhle aktualizace.<br>Bez předávání třetím stranám. Odhlášení kdykoli.</span>
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 
   <footer>
-    <span>vibecodováno s Claude Sonnetem</span>
-    <span style="font-family:'Press Start 2P',monospace; font-size: 7px; color: var(--border-bright);">EOF</span>
+    <p class="footer-note">© 2026 Honza Brzák</p>
+    <ul class="footer-links">
+      <li><a href="https://github.com/HonzaBBB" target="_blank" rel="noopener">GitHub</a></li>
+      <li><a href="https://janbrzak.com" target="_blank" rel="noopener">Blog</a></li>
+      <li><a href="mailto:honza@honzabrzak.tech">Email</a></li>
+    </ul>
   </footer>
 
-</div>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      if (root.classList.contains('lang-cs')) {
+        var input = document.getElementById('contact-email');
+        if (input) {
+          var ph = input.getAttribute('data-placeholder-cs');
+          if (ph) input.placeholder = ph;
+          var ar = input.getAttribute('data-aria-cs');
+          if (ar) input.setAttribute('aria-label', ar);
+        }
+      }
+    })();
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const delay = entry.target.dataset.delay || 0;
+          setTimeout(() => entry.target.classList.add('visible'), delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.pillar, .project').forEach((el, i) => {
+      el.dataset.delay = i * 60;
+      observer.observe(el);
+    });
+  </script>
 
 </body>
 </html>
